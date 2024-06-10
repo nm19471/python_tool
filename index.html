@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Document Generator</title>
+</head>
+<body>
+    <h1>Generate Document</h1>
+    <form id="inputForm">
+        <input type="text" id="userInput" name="user_input" placeholder="Enter something" required>
+        <input type="submit" value="Generate">
+    </form>
+    <p id="result"></p>
+
+    <script>
+        document.getElementById('inputForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const userInput = document.getElementById('userInput').value;
+            
+            const response = await fetch('https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/dispatches', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Authorization': 'token YOUR_GITHUB_TOKEN'
+                },
+                body: JSON.stringify({
+                    event_type: 'generate_document',
+                    client_payload: { user_input: userInput }
+                })
+            });
+
+            if (response.ok) {
+                document.getElementById('result').innerText = 'Document generation triggered!';
+            } else {
+                document.getElementById('result').innerText = 'Failed to trigger document generation.';
+            }
+        };
+    </script>
+</body>
+</html>
